@@ -2,7 +2,7 @@ import board
 
 class Player():
 	def __init__(self, color, tile):
-		#color: black(X) or white(O)
+		#color: black(X) or white(O), NOT SURE IF WE NEED IT
 		#tile: 1(X) or 0(O) 
 		self.color = color
 		self.tile = tile
@@ -27,14 +27,30 @@ class Player():
 class HumanPlayer(Player):
 	def findRemove(self):
 		#ask user for coordinates to remove
+		print "Enter the Position (x,y) You Want to Remove."
+		x = int(input("Enter x: "))
+		y = int(input("Enter y: "))
 		#check if valid
+		if this.tile == 1: #black tile
+			pass
+		else: #white tile, needs to check adjacent tiles
+			pass
 		#if valid, return it
+		return (x,y)
+
 		pass
 	def findMove(self):
 		#ask user for inputs (from and to)
-		#check if inputs are valid
+		print "Enter the Position (x1,y1) You Want to Move from."
+		x1 = int(input("Enter x1: "))
+		y1 = int(input("Enter y1: "))
+		print "Enter the Position (x2,y2) You Want to Move to."
+		x2 = int(input("Enter x2: "))
+		y2 = int(input("Enter y2: "))
+		#check if inputs are valid #############
+			#NEED TO BE IMPLEMENTED
 		#if valid, return the two coordinates
-		pass
+		return [(x1, y1), (x2, y2)]
 
 
 

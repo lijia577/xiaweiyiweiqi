@@ -52,10 +52,7 @@ class Board():
 		or not self.board_coor[x2][y2]==-1:
 			return 0
 		return 1
-	def getSuccessors(self, tile):
-		## a little bit unclear ....
-		## return all possible boards after 'tile' moves??
-		pass
+	
 
 
 
