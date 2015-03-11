@@ -10,7 +10,8 @@ class Player():
 		#make a remove at selected location
 		(x,y) = from_coor
 		board.set(x, y, -1)
-	def makeMove(self, from_coor, to_coor, board):
+	# +++++ Jia made change below, board use to be the last argument, now, it is the second argument +++++ 
+	def makeMove(self,board, from_coor, to_coor):
 		#make a move from one location to another
 		from_tile = board.get(from_coor[0], from_coor[1])
 		board.set(from_coor[0], from_coor[1], -1)
@@ -60,16 +61,17 @@ class AIPlayer(Player):
 		#remember to check tile
 		#return a selected coordinates
 		pass
-	def findMove(self, strat=miniMax, board):
+	
+	def alphaBeta():
+		pass
+
+	def findMove(self,board, strat = alphaBeta()):
+		print self.color
 		#call miniMax to find a movement
 		#return that move
 		pass
 
-	#static functions (OR NOT, IF YOU DON'T WANT)
-	def miniMax(): ####MODIFY THIS HOWEVER YOU WANT
-		pass
-
-	def alphaBetaPrunning(): ####MODIFY THIS HOWEVER YOU WANT
+	def abPrunning(): ####MODIFY THIS HOWEVER YOU WANT
 		pass
 
 	

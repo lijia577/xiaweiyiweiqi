@@ -11,6 +11,7 @@ class Board():
 				curr_row = row_eve
 			self.board_coor.append(curr_row[:])
 	def get(self, x, y):
+		###### return number -99 if the x,y is not valid. 
 		return self.board_coor[x][y]
 	def set(self, x, y, value):
 		#check value is in {0, 1, -1}?
