@@ -16,9 +16,7 @@ class State:
 		return board.checkMovesLeft(self.tile)==0
 	
 	def getToCoordinates(self,fromCoordinates):
-		"""
-		Given a fromCoordinates, return a list of all possible toCoordinates
-		"""
+		#Given a fromCoordinates, return a list of all possible toCoordinates
 		#Implementing BFS
 		res = []
 		visited = set()
@@ -50,9 +48,7 @@ class State:
 		
 	
 	def getPossibleMoves(self):
-		"""
-		for the current state, given self.tile. Figure out what moves can be made. Returns a list of (fromCoordinates, toCoordinates).
-		"""	
+		#for the current state, given self.tile. Figure out what moves can be made. Returns a list of (fromCoordinates, toCoordinates).
 		res = []
 		# color can be determined using self.tile 
 		# first, construct a list of movable tiles
@@ -65,6 +61,9 @@ class State:
 					toCrdList = getToCoordinates(tile)
 					for toCrd in toCrdList:
 						res.append((fromCrd,toCrd))
+
+
+
 
 	# generate successors 
 	def genSucc(self):
@@ -82,7 +81,6 @@ class State:
 
 
 	def staticEval(self, rootTile):
-		import sys
 		if(board.checkMovesLeft(self.tile)==0):
 			if(self.tile == rootTile):
 				# rootTile loses
@@ -95,7 +93,7 @@ class State:
 			num1 = len(getPossibleMoves(self.board, rootTile))
 			# this can be INEFFICIENT!
 			op = (rootTile+1)%2 
-			num2 = len(getPossibleMoves(self.board,op)
+			num2 = len(getPossibleMoves(self.board,op))
 			# moves root tile can make - moves oppenent can make
 			return num1 - num2 
 			
