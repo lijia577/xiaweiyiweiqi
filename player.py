@@ -1,4 +1,5 @@
 import board
+from copy import deepcopy
 
 class Player():
 	def __init__(self, color, tile):
@@ -15,7 +16,23 @@ class Player():
 		#make a move from one location to another
 		from_tile = board.get(from_coor[0], from_coor[1])
 		board.set(from_coor[0], from_coor[1], -1)
-		board.set(to_coor[0], to_coor[1], from_tile)
+		board.set(to_coor[0], to_coor[1], from_tile)        
+	@classmethod
+	def executeMove(cls, board, move):
+                for i in range(len(move)-1):
+                        sx, sy = move[i] #start crd 
+                        ex, ey = move[i+1] #end crd
+                        value = board.get(sx,sy)
+                        board.set(sx,sy,-1) #set start crd to be .
+                        #clear up the opponent's tile
+                        if(sx==ex):
+                                board.set(sx,(sy+ey)/2,-1)
+                        elif(sy==ey):
+                                board.set((sx+ex)/2,sy,-1)
+                        else:
+                                print 'Error in ExecuteMove. The move you provide is not valid'
+                        board.set(ex,ey,value)
+
 	def findRemove(self):
 		pass #override
 	def findMove(self):
@@ -62,19 +79,12 @@ class AIPlayer(Player):
 		#return a selected coordinates
 		pass
 	
-	def alphaBeta():
-		pass
-
-	def findMove(self,board, strat = alphaBeta()):
-		print self.color
-		#call miniMax to find a movement
-		#return that move
-		pass
-
-	def abPrunning(): ####MODIFY THIS HOWEVER YOU WANT
-		pass
-
-	
+	def findMove( self, board, depth):
+		import state
+		s = state.State(deepcopy(board),self.tile)
+		move = state.alphabeta(s,depth,self.tile)
+		return move
+		
 
 
 

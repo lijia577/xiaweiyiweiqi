@@ -62,7 +62,7 @@ from copy import deepcopy
 tb = deepcopy(s.board)
 print'before Move'
 tb.display()
-s.executeMove(tb,singleMove)
+player.Player.executeMove(tb,singleMove)
 print 'after move', singleMove
 tb.display()
 
@@ -102,19 +102,19 @@ print '----------'
 
 print 'Testing -alphabeta pruning'
 b.display()
-move = state.alphabeta(s,True,8,1)
+move = state.alphabeta(s,8,1)
 print move
-s.executeMove(b,move)
+player.Player.executeMove(b,move)
 b.display()
 
 move = [(8,8),(6,8),(6,6),(6,4)]
-s.executeMove(b,move)
+player.Player.executeMove(b,move)
 b.display()
 
 newState = state.State(deepcopy(b),1)
-move = state.alphabeta(newState,True,8,1)
+move = state.alphabeta(newState,8,1)
 print move
-newState.executeMove(b,move)
+player.Player.executeMove(b,move)
 b.display()
 
 print 'End of first alphabeta test case.'
@@ -155,24 +155,76 @@ print 'Testing with a different board'
 b.display()
 
 s = state.State(deepcopy(b),1)
-move = alphabeta(s,True,10,1)
+move = alphabeta(s,10,1)
 print move 
-s.executeMove(b,move)
+player.Player.executeMove(b,move)
 b.display()
 print "user's turn"
 move = [(3,5),(1,5)]
-s.executeMove(b,move)
+player.Player.executeMove(b,move)
 b.display()
 
 s = state.State(deepcopy(b),1)
-move = alphabeta(s,True,10,1)
+move = alphabeta(s,10,1)
 print move
-s.executeMove(b,move)
+player.Player.executeMove(b,move)
 b.display()
 
 
 
+print '------------------------------'
+print 'Testting Player class'
 
+
+l1 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l2 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l3 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l4 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l5 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l6 = [-1, -1, -1,  1,  0,  1, -1, -1]
+l7 = [-1, -1, -1,  0,  1, -1, -1, -1]
+l8 = [-1, -1, -1, -1, -1, -1, -1, -1]
+
+
+l = []
+l.extend(l8)
+l.extend(l7)
+l.extend(l6)
+l.extend(l5)
+l.extend(l4)
+l.extend(l3)
+l.extend(l2)
+l.extend(l1)
+
+from state import alphabeta
+b = board.Board()
+
+
+i = 0
+for x in range(1,9):
+	for y in range(1,9):
+		b.set(x,y,l[i])
+		i+=1
+
+print 'Testing with a instance of AIPlayer'
+b.display()
+
+ai = player.AIPlayer('black',1)
+move = ai.findMove(deepcopy(b),10)
+print move 
+ai.executeMove(b,move)
+b.display()
+
+
+print "user's turn"
+move = [(3,5),(1,5)]
+player.Player.executeMove(b,move)
+b.display()
+
+move = ai.findMove(deepcopy(b),10)
+print move
+player.Player.executeMove(b,move)
+b.display()
 
 
 

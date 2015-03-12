@@ -9,7 +9,7 @@ class State:
 		self.board = board
 		self.parent = parent
 		self.kids = [] 
-		self.tile = tile # indicates who is playing right now.
+		self.tile = tile # indicates who is playing in this state
 		self.action = action
 	
 	def isTerminal(self):
@@ -61,8 +61,8 @@ class State:
 				if(tile == self.tile):
 					res.extend(self.getMoveList((x,y)))
 		return res
-	
-	def executeMove(self, board, move):
+	'''		
+	def executeMove(board, move):
 		for i in range(len(move)-1):
 			sx, sy = move[i] #start crd 
 			ex, ey = move[i+1] #end crd
@@ -76,7 +76,7 @@ class State:
 			else: 
 				print 'Error in ExecuteMove. The move you provide is not valid'
 			board.set(ex,ey,value)
-			
+	'''		
 	
 	# generate successors 
 	def genSucc(self):
@@ -86,7 +86,7 @@ class State:
 		for move in moves:
 			newBoard = deepcopy(self.board)
 			# execute moves on a deepcoy of this.board
-			self.executeMove(newBoard, move) 
+			player.Player.executeMove(newBoard, move) 
 			op = (self.tile+1)%2 
 			# self is the parent of childNode.
 			childNode = State(newBoard,op,self,move) 
@@ -110,7 +110,7 @@ class State:
 			return num1 - num2 
 			
 	
-def alphabeta(state, maxFlag, depth, rootTile):
+def alphabeta(state, depth, rootTile):
 	if(depth ==0):
 		print "alphabeta on depth 0 is meaningless. Error"
 		return None
@@ -118,7 +118,7 @@ def alphabeta(state, maxFlag, depth, rootTile):
 	# parameter : the last key is node list. 	
 	pm = {'inf':sys.maxint, '-inf':-sys.maxint-1,'cut':0, 'eval':0, 'nl':[]}
 	
-	res = abhelper(state, pm['-inf'], pm['inf'], maxFlag, depth, pm, rootTile)
+	res = abhelper(state, pm['-inf'], pm['inf'], True, depth, pm, rootTile)
 	
 	#book keeping staff: 
 	print 'number of cutoffs in pruning: ', pm['cut']
@@ -169,6 +169,9 @@ def abhelper(state, a, b, maxFlag, depth, pm, rootTile):
 				
 
 def getExeNode(m):
+	#
+	# A helper function to trace node to a node close to root. 
+	#
 	n = m
 	while(n.parent.parent!=None):	
 		n = n.parent
