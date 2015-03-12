@@ -11,11 +11,13 @@ class Board():
 				curr_row = row_eve
 			self.board_coor.append(curr_row[:])
 	def get(self, x, y):
-		###### return number -99 if the x,y is not valid. 
-		return self.board_coor[x][y]
+		###### return number -99 if the x,y is not valid.
+ 		if(x>8 or x<1 or y>8 or y<1):
+			return -99
+		return self.board_coor[x-1][y-1]
 	def set(self, x, y, value):
 		#check value is in {0, 1, -1}?
-		self.board_coor[x][y] = value
+		self.board_coor[x-1][y-1] = value
 	def display(self):
 		mapping  = {0:'O', 1:'X', -1:'.'}
 		print "\t1 2 3 4 5 6 7 8\n"
@@ -23,6 +25,8 @@ class Board():
 			rep = [mapping[tile] for tile in self.board_coor[7-i]]
 			rep = " ".join(rep)
 			print 8-i, "\t", rep
+		print ""
+		
 	def checkMovesLeft(self, tile):
 		#
 		# if the tile next to me is opponent and next next to me is empty,
@@ -54,7 +58,7 @@ class Board():
 			return 0
 		return 1
 	
-
+	
 
 
 

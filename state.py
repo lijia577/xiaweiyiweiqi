@@ -5,17 +5,24 @@ import player
 
 
 class State:
-	def __init__(self, board, tile, parent=None):
+	def __init__(self, board, tile, parent=None, action = None):
 		self.board = board
 		self.parent = parent
 		self.kids = [] 
 		self.tile = tile # indicates who is playing right now.
-
+		self.action = action
+	
 	def isTerminal(self):
 		# this state is terminal if no moves possible for the current tile. 
-		return board.checkMovesLeft(self.tile)==0
+		return self.board.checkMovesLeft(self.tile)==0
+
+
+	
 	
 	def getToCoordinates(self,fromCoordinates):
+		if(self.board.get(*fromCoordinates)!=self.tile):
+			print 'Error in getToCoordinates in State class. tile mismatch'
+			return None
 		#Given a fromCoordinates, return a list of all possible toCoordinates
 		#Implementing BFS
 		res = []
@@ -28,7 +35,7 @@ class State:
 			
 			x,y = cur
 		
-			if(self.board.get(x+1,y) == op and self.board.get(x+2,y) == -1 and not((x+2,y) in visisted)):
+			if(self.board.get(x+1,y) == op and self.board.get(x+2,y) == -1 and not((x+2,y) in visited)):
 				crd = (x+2, y)
 				res.append(crd)
 				frontier.append(crd)
@@ -52,36 +59,46 @@ class State:
 		res = []
 		# color can be determined using self.tile 
 		# first, construct a list of movable tiles
-		for x in range(8):
-			for y in range(8):
+		for x in range(1,9):
+			for y in range(1,9):
 				fromCrd = (x,y)
-				tile = self.board.get(*fromCrd)
+				tile = self.board.get(*fromCrd)			
 				#check if the color is right. 
 				if(tile == self.tile):
-					toCrdList = getToCoordinates(tile)
+					toCrdList = self.getToCoordinates(fromCrd)
 					for toCrd in toCrdList:
 						res.append((fromCrd,toCrd))
-
-
-
-
+		return res
+	
+	# BUG execute MOVE DOES NOT REMOVE opponent tiles!!
+	def executeMove(self, board, fromCrd, toCrd):
+		x1,y1 = fromCrd
+		value = board.get(x1,y1)
+		board.set(x1,y1,-1)
+		x2,y2 = toCrd
+		board.set(x2,y2,value)
+		if(x1<1 or x2<1 or y1>8 or y2>8):
+			print 'Warning! in executeMove in state class'
+	
+	
 	# generate successors 
 	def genSucc(self):
 		######### IMPLEMENT THIS ##########
 		moves = self.getPossibleMoves()
 		
 		for move in moves:
-			newBoard = deepcopy(this.board)
+			newBoard = deepcopy(self.board)
 			# execute moves on a deepcoy of this.board
-			player.makeMove(newBoard, *move) 
+			self.executeMove(newBoard, *move) 
 			op = (self.tile+1)%2 
 			# self is the parent of childNode.
-			childNode = State(newBoard,op,self) 
+			childNode = State(newBoard,op,self,move) 
 			self.kids.append(childNode)
 
-
+	# The current static evalution function how many black tiles ,for exmaple, are MOVABLE. 
+	# It is DIFFERENT from NUMBER of ALL POSSIBLE MOVES currently !
 	def staticEval(self, rootTile):
-		if(board.checkMovesLeft(self.tile)==0):
+		if(self.isTerminal()==True):
 			if(self.tile == rootTile):
 				# rootTile loses
 				return -sys.maxint-1
@@ -90,11 +107,11 @@ class State:
 				return sys.maxint
 		else:
 			#  WE CARE ABOUT ROOT TILE NOT SELF.TILE
-			num1 = len(getPossibleMoves(self.board, rootTile))
-			# this can be INEFFICIENT!
+			num1 = self.board.checkMovesLeft(rootTile)
 			op = (rootTile+1)%2 
-			num2 = len(getPossibleMoves(self.board,op))
+			num2 = self.board.checkMovesLeft(op)
 			# moves root tile can make - moves oppenent can make
+			print 'num1 is ', num1, 'num2 is ', num2
 			return num1 - num2 
 			
 
@@ -166,8 +183,4 @@ class State:
 		li.reverse()
 		return li
 	
-
-
-
-
 
