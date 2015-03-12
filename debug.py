@@ -39,15 +39,18 @@ print s.isTerminal(), '? false'
 
 
 s.board.display()
-
 print 'Start test getToCoordinates'
-crd= (1,6)
-print s.board.get(*crd) , ' is the orginal crd'
-res  = s.getToCoordinates(crd)
-print res, 'should be 3,6 and 5,6'
 
+crd1 = (1,6)
+l1 = s.getMoveList(crd1)
+crd2 = (4,1)
+l2 = s.getMoveList(crd2)
+print l1
+print l2
 
-
+print 'Test get all possible moves'
+print s.getPossibleMoves()
+"""
 print "Start: test get possible moves"
 res = s.getPossibleMoves()
 print 'all possible moves for black at this point', res
@@ -95,7 +98,7 @@ print s.staticEval(1)
 print k1.staticEval(1)
 print k2.staticEval(1)
 
-
+"""
 
 
 

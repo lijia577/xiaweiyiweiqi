@@ -16,43 +16,38 @@ class State:
 		# this state is terminal if no moves possible for the current tile. 
 		return self.board.checkMovesLeft(self.tile)==0
 
-
-	
-	
-	def getToCoordinates(self,fromCoordinates):
-		if(self.board.get(*fromCoordinates)!=self.tile):
+	# input: start crd, output, a list of possible moves starting from this
+	def getMoveList(self,startCrd):
+		if(self.board.get(*startCrd)!=self.tile):
 			print 'Error in getToCoordinates in State class. tile mismatch'
 			return None
 		#Given a fromCoordinates, return a list of all possible toCoordinates
-		#Implementing BFS
 		res = []
-		visited = set()
-		op =(self.tile+1)%2;
-		frontier = [fromCoordinates]
-		while(len(frontier)>0):
-			cur  = frontier.pop(0)
-			visited.add(cur)
-			
-			x,y = cur
+		self.getMoveHelper(startCrd, res, [], [])
+		return res[1:]
+	
+	def getMoveHelper(self, crd, res, path, visited):
+		path.append(crd)
+		res.append(path)
 		
-			if(self.board.get(x+1,y) == op and self.board.get(x+2,y) == -1 and not((x+2,y) in visited)):
-				crd = (x+2, y)
-				res.append(crd)
-				frontier.append(crd)
-			if(self.board.get(x,y+1) == op and self.board.get(x,y+2) == -1 and not((x,y+2)in visited)):
-				crd = (x,y+2)
-				res.append(crd)
-				frontier.append(crd)
-			if(self.board.get(x-1,y) == op and  self.board.get(x-2, y) ==-1 and not((x-2,y)in visited)):
-				crd = (x-2,y)
-				res.append(crd)
-				frontier.append(crd)
-			if(self.board.get(x,y-1) == op and self.board.get(x,y-2) == -1 and not((x,y-2)in visited)):
-				crd = (x, y-2)
-				res.append(crd)
-				frontier.append(crd)
-		return res	
+		children = []
+		visited.append(crd)
+		x,y = crd 
+		op = (self.tile+1)%2
+		if(self.board.get(x+1,y)==op and self.board.get(x+2,y)==-1 and not((x+2,y)in visited)):
+			children.append((x+2,y))
+		if(self.board.get(x-1,y)==op and self.board.get(x-2,y)==-1 and not((x-2,y)in visited)):
+			children.append((x-2,y))
+		if(self.board.get(x,y-1)==op and self.board.get(x,y-2)==-1 and not((x,y-2)in visited)):
+			children.append((x,y-2))
+		if(self.board.get(x,y+1)==op and self.board.get(x,y+2)==-1 and not((x,y+2)in visited)):
+			children.append((x,y+2))
 		
+		if(len(children)==0):
+			return 
+		
+		for c in children:
+			self.getMoveHelper(c,res,path[:],visited)
 	
 	def getPossibleMoves(self):
 		#for the current state, given self.tile. Figure out what moves can be made. Returns a list of (fromCoordinates, toCoordinates).
@@ -61,17 +56,13 @@ class State:
 		# first, construct a list of movable tiles
 		for x in range(1,9):
 			for y in range(1,9):
-				fromCrd = (x,y)
-				tile = self.board.get(*fromCrd)			
+				tile = self.board.get(x,y)			
 				#check if the color is right. 
 				if(tile == self.tile):
-					toCrdList = self.getToCoordinates(fromCrd)
-					for toCrd in toCrdList:
-						res.append((fromCrd,toCrd))
+					res.extend(self.getMoveList((x,y)))
 		return res
 	
-	# BUG execute MOVE DOES NOT REMOVE opponent tiles!!
-	def executeMove(self, board, fromCrd, toCrd):
+	def executeMove(self, board, move):
 		x1,y1 = fromCrd
 		value = board.get(x1,y1)
 		board.set(x1,y1,-1)
