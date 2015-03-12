@@ -1,6 +1,8 @@
 import board
 import player
 
+ 
+
 l1 = [-1, 0, -1, 0, 1, 0, -1, 0]
 l2 = [-1,-1,-1,-1,0, -1, -1, 1]
 l3 = [1, -1, -1, -1, 1, -1, 1, -1]
@@ -32,8 +34,8 @@ for x in range(1,9):
 
 b.display()
 import state
-
-s = state.State(b,1)
+from copy import deepcopy
+s = state.State(deepcopy(b),1)
 
 print s.isTerminal(), '? false'
 
@@ -49,56 +51,124 @@ print l1
 print l2
 
 print 'Test get all possible moves'
-print s.getPossibleMoves()
-"""
-print "Start: test get possible moves"
-res = s.getPossibleMoves()
-print 'all possible moves for black at this point', res
-print 'length of all possible moves are 7?  ', len(res)
+testMove =  s.getPossibleMoves()
+print testMove
 
-print 'test executeMove on board b'
-#b.display()
-#s.executeMove(b,(7,5),(5,5))
-#b.display()
+print 'test execute move'
+singleMove = testMove[2]
 
 
-print 'Next, test genSucc function'
-s.genSucc()
-print 'len should be 7', len(s.kids)
+from copy import deepcopy
+tb = deepcopy(s.board)
+print'before Move'
+tb.display()
+s.executeMove(tb,singleMove)
+print 'after move', singleMove
+tb.display()
 
-print 'Check child state 1 ....'
-print 'before'
+
+
+print '********************'
+print 'Test generate sucuessor function'
+
+print 'root board state'
 s.board.display()
+s.genSucc()
+print 'root board should have 7 successor board state' , len(s.kids)
 
-k1 = s.kids[0]
-print 'after action', k1.action
-k1.board.display()
+print 'The firld child board state'
+s.kids[0].board.display()
 
-print 'Check child state 7....'
+s.kids[0].genSucc()
+print 'kis 0 has 6 successors', len(s.kids[0].kids)
 
-k2 = s.kids[6]
-print 'with action', k2.action
-k2.board.display()
+print 'the successor of kid 0 of s'
+s.kids[0].kids[5].board.display()
 
+#print 'The second child board state'
+#s.kids[6].board.display()
 
-
-print 's tile should be 1', s.tile
-print 'k1 tile is ?',k1.tile
-print 'k2 tile is ?',k2.tile
-
-k2.genSucc()
-
-k22 = k2.kids[0]
-print 'k22 tile is?', k22.tile
-
-
-
-print 'checing static evaluation function of s, k1, k2 black is playing '
+print 'Testing - Static evalutation'
+print 'Testing root state static evaluation'
 print s.staticEval(1)
-print k1.staticEval(1)
-print k2.staticEval(1)
+print s.kids[0].staticEval(1)
+print s.kids[0].kids[5].staticEval(1)
 
-"""
+print s.kids[0].action
+
+print ""
+print ""
+print '----------'
+
+print 'Testing -alphabeta pruning'
+b.display()
+move = state.alphabeta(s,True,8,1)
+print move
+s.executeMove(b,move)
+b.display()
+
+move = [(8,8),(6,8),(6,6),(6,4)]
+s.executeMove(b,move)
+b.display()
+
+newState = state.State(deepcopy(b),1)
+move = state.alphabeta(newState,True,8,1)
+print move
+newState.executeMove(b,move)
+b.display()
+
+print 'End of first alphabeta test case.'
+
+
+
+l1 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l2 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l3 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l4 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l5 = [-1, -1, -1, -1, -1, -1, -1, -1]
+l6 = [-1, -1, -1,  1,  0,  1, -1, -1]
+l7 = [-1, -1, -1,  0,  1, -1, -1, -1]
+l8 = [-1, -1, -1, -1, -1, -1, -1, -1]
+
+
+l = []
+l.extend(l8)
+l.extend(l7)
+l.extend(l6)
+l.extend(l5)
+l.extend(l4)
+l.extend(l3)
+l.extend(l2)
+l.extend(l1)
+
+from state import alphabeta
+b = board.Board()
+
+
+i = 0
+for x in range(1,9):
+	for y in range(1,9):
+		b.set(x,y,l[i])
+		i+=1
+
+print 'Testing with a different board'
+b.display()
+
+s = state.State(deepcopy(b),1)
+move = alphabeta(s,True,10,1)
+print move 
+s.executeMove(b,move)
+b.display()
+print "user's turn"
+move = [(3,5),(1,5)]
+s.executeMove(b,move)
+b.display()
+
+s = state.State(deepcopy(b),1)
+move = alphabeta(s,True,10,1)
+print move
+s.executeMove(b,move)
+b.display()
 
 
 
