@@ -1,4 +1,4 @@
-import board
+import board, random
 from copy import deepcopy
 
 class Player():
@@ -7,35 +7,32 @@ class Player():
 		#tile: 1(X) or 0(O) 
 		self.color = color
 		self.tile = tile
-	def makeRemove(self, from_coor, board):
+	def makeRemove(self, board):
 		#make a remove at selected location
-		(x,y) = from_coor
+		(x,y) = self.findRemove(board)
 		board.set(x, y, -1)
-	# +++++ Jia made change below, board use to be the last argument, now, it is the second argument +++++ 
-	def makeMove(self,board, from_coor, to_coor):
+	def makeMove(self,board):
+        #
+        # Siv: ASSUME findMove does all the error checking ###
+        #
 		#make a move from one location to another
-		from_tile = board.get(from_coor[0], from_coor[1])
-		board.set(from_coor[0], from_coor[1], -1)
-		board.set(to_coor[0], to_coor[1], from_tile)        
-	@classmethod
-	def executeMove(cls, board, move):
-                for i in range(len(move)-1):
-                        sx, sy = move[i] #start crd 
-                        ex, ey = move[i+1] #end crd
-                        value = board.get(sx,sy)
-                        board.set(sx,sy,-1) #set start crd to be .
-                        #clear up the opponent's tile
-                        if(sx==ex):
-                                board.set(sx,(sy+ey)/2,-1)
-                        elif(sy==ey):
-                                board.set((sx+ex)/2,sy,-1)
-                        else:
-                                print 'Error in ExecuteMove. The move you provide is not valid'
-                        board.set(ex,ey,value)
+		list_of_moves = self.findMove(board)
+		for i in len(list_of_moves)-1:
+			(sx, sy) = list_of_moves[i]
+			(ex, ey) = list_of_moves[i+1]
+            value = board.get(sx,sy)
+            board.set(sx,sy,-1) #set start crd to be .
+            #clear up the opponent's tile
+            if(sx==ex):
+                board.set(sx,(sy+ey)/2,-1)
+            else(sy==ey):
+                board.set((sx+ex)/2,sy,-1)
+            board.set(ex,ey,value)
 
-	def findRemove(self):
+
+	def findRemove(self, board):
 		pass #override
-	def findMove(self):
+	def findMove(self, board):
 		pass #override
 	def isWin(self, board):
 		# You win when your opponent has nothing to move
@@ -43,41 +40,52 @@ class Player():
 		return board.checkMovesLeft(opponent) == 0
 
 class HumanPlayer(Player):
-	def findRemove(self):
-		#ask user for coordinates to remove
-		print "Enter the Position (x,y) You Want to Remove."
-		x = int(input("Enter x: "))
-		y = int(input("Enter y: "))
-		#check if valid
-		if this.tile == 1: #black tile
-			pass
-		else: #white tile, needs to check adjacent tiles
-			pass
-		#if valid, return it
-		return (x,y)
-
-		pass
+	def findRemove(self, board):
+		while True:
+			#ask user for coordinates to remove
+			print "Enter the Position (x,y) You Want to Remove."
+			x = int(input("Enter x: "))
+			y = int(input("Enter y: "))
+			#check if valid
+			if this.tile == 1: #black tile
+				if (x,y) == (8,1) or (x,y) == (1,8) \
+				or (x,y) == (4,5) or (x,y) == (5,4):
+					return (x,y)
+			else: #white tile, needs to check adjacent tiles
+				if (((x+1, y) == (8,1) or (x,y-1) == (8,1)) and board.get(8,1)==-1) \
+				or (((x, y-1) == (1,8) or (x+1,y) == (1,8)) and board.get(1,8)==-1) \
+				or (((x, y) == (4,4) or (x,y) == (5,5)) and (board.get(4,5) == -1 or board.get(5,4)==-1)):
+					return (x,y)
+			print "Invalid position. Try again."
+		
 	def findMove(self):
-		#ask user for inputs (from and to)
-		print "Enter the Position (x1,y1) You Want to Move from."
-		x1 = int(input("Enter x1: "))
-		y1 = int(input("Enter y1: "))
-		print "Enter the Position (x2,y2) You Want to Move to."
-		x2 = int(input("Enter x2: "))
-		y2 = int(input("Enter y2: "))
+		#ask user for list inputs, in form "(x1, y1), (x2, y2), (x3, y3), ...."
+		move_input = input("Enter a list of postions you want to move.")
+		#parse input for move
+			#IMPLEMENTED
 		#check if inputs are valid #############
 			#NEED TO BE IMPLEMENTED
 		#if valid, return the two coordinates
-		return [(x1, y1), (x2, y2)]
+		return []
 
 
 
 class AIPlayer(Player):
-	def findRemove(self):
-		#ranodm select from the legal ones 
-		#remember to check tile
-		#return a selected coordinates
-		pass
+	def findRemove(self, board):
+		#get legal ones
+		legal_moves = []
+		if self.tile == 1: #BLACK
+			legal_moves = [(8,1), (1,8), (4,5), (5,4)]
+		else:#WHITE
+			if board.get(8,1) == -1:
+				legal_moves = [(7,1), (8,2)]
+			elif board.get(1,8) == -1:
+				legal_moves = [(1,7), (2,8)]
+			else:
+				legal_moves = [(4,4), (5,5)]
+		#return a random one from legal moves
+		random.shuffle(legal_moves)
+		return legal_moves[0]
 	
 	def findMove( self, board, depth):
 		import state
