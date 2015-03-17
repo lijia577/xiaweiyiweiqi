@@ -1,5 +1,6 @@
 import board, random
 from copy import deepcopy
+from ast import literal_eval
 
 class Player():
 	def __init__(self, color, tile):
@@ -60,13 +61,30 @@ class HumanPlayer(Player):
 		
 	def findMove(self):
 		#ask user for list inputs, in form "(x1, y1), (x2, y2), (x3, y3), ...."
-		move_input = input("Enter a list of postions you want to move.")
-		#parse input for move
-			#IMPLEMENTED
-		#check if inputs are valid #############
-			#NEED TO BE IMPLEMENTED
-		#if valid, return the two coordinates
-		return []
+		while (True):
+			move_input = input("Enter a list of postions you want to move.")
+			move_input = list(literal_eval(move_input)) #list of tuples
+			if len(move_input) < 2 :
+				continue
+			me = self.tile
+			opponent = (self.tile+1)%2
+			success = 1
+			for i in range(len(move_input)-1):
+				(x1,y1) = move_input[i]
+				(x2,y2) = move_input[i+1]
+				if (i ==0 and board.get(x1, y1) != me) or \
+					(i != 0 and board.get(x1, y1) != -1) or \
+					board.get(x2,y2) != -1 or \
+					(x1==x2 and abs(y1-y2)!=2) or \
+					(y1==y2 and abs(x1-x2)!=2) or \
+					(x1==x2 and board.get(x1,(y1+y2)/2) != opponent) or \
+					(y1==y2 and board.get((x1+x2)/2, y1) != opponent):
+						success = 0
+						break
+			if success:
+				return move_input
+
+	
 
 
 
