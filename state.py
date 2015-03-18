@@ -62,8 +62,8 @@ class State:
 				if(tile == self.tile):
 					res.extend(self.getMoveList((x,y)))
 		return res
-	'''		
-	def executeMove(board, move):
+			
+	def executeMove(self,board, move):
 		for i in range(len(move)-1):
 			sx, sy = move[i] #start crd 
 			ex, ey = move[i+1] #end crd
@@ -77,7 +77,6 @@ class State:
 			else: 
 				print 'Error in ExecuteMove. The move you provide is not valid'
 			board.set(ex,ey,value)
-	'''		
 	
 	# generate successors 
 	def genSucc(self):
@@ -87,7 +86,7 @@ class State:
 		for move in moves:
 			newBoard = deepcopy(self.board)
 			# execute moves on a deepcoy of this.board
-			self.player.makeMove(newBoard, move) 
+			self.executeMove(newBoard,move) 
 			op = (self.tile+1)%2 
 			# self is the parent of childNode.
 			childNode = State(newBoard,op,self.player, self,move) 

@@ -100,10 +100,10 @@ class AIPlayer(Player):
 		print legal_moves
 		return legal_moves[0]
 	
-	def makeMove(self,board,depth):
+	def makeMove(self,board):
 		#make a move from one location to another
-		list_of_moves = self.findMove(board,depth)
-		for i in len(list_of_moves)-1:
+		list_of_moves = self.findMove(board)
+		for i in range(len(list_of_moves)-1):
 			(sx, sy) = list_of_moves[i]
 			(ex, ey) = list_of_moves[i+1]
 			value = board.get(sx,sy)
@@ -115,7 +115,7 @@ class AIPlayer(Player):
 				board.set((sx+ex)/2,sy,-1)
 			board.set(ex,ey,value)
 	
-	def findMove( self, board,d):
+	def findMove( self, board):
 		d = self.depth
 		import state
 		s = state.State(deepcopy(board),self.tile,self)

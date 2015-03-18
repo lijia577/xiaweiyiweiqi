@@ -2,8 +2,8 @@ import board, player
 
 def main():
 	myBoard = board.Board()
-	black_player = player.AIPlayer('black', 1,1)
-	white_player = player.AIPlayer('white', 0,1)
+	black_player = player.AIPlayer('black', 1,2)
+	white_player = player.AIPlayer('white', 0,3)
 
 	#Dispaly initial board
 	myBoard.display()
@@ -15,9 +15,9 @@ def main():
 	myBoard.display()
 	#Further rounds are in a loop
 	while not (black_player.isWin(myBoard) or white_player.isWin(myBoard)):
-	 	black_player.makeMove(myBoard,2)
+	 	black_player.makeMove(myBoard)
 	 	myBoard.display()
-	 	white_player.makeMove(myBoard,3)
+	 	white_player.makeMove(myBoard)
 	 	myBoard.display()
 	#Show winner
 	if black_player.isWin(myBoard):
