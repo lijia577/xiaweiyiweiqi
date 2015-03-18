@@ -1,22 +1,22 @@
-import board, player, state
+import board, player
 
 def main():
-	board = Board()
-	black_player = HumanPlayer('black', 1)
-	white_player = AIPlayer('white', 2)
+	myBoard = board.Board()
+	black_player = player.AIPlayer('black', 1, 2)
+	white_player = player.AIPlayer('white', 2, 3)
 	#Dispaly initial board
-	board.display()
+	myBoard.display()
 	#First round, remove tiles
-	black_player.makeRemove(board)
-	board.display()
-	white_player.makeRemove(board)
-	board.display()
+	black_player.makeRemove(myBoard)
+	myBoard.display()
+	white_player.makeRemove(myBoard)
+	myBoard.display()
 	#Further rounds are in a loop
 	while not (black_player.isWin() or white_player.isWin()):
-		black_player.makeMove(board)
-		board.display()
-		white_player.makeMove(board)
-		board.display()
+		black_player.makeMove(myBoard)
+		myBoard.display()
+		white_player.makeMove(myBoard)
+		myBoard.display()
 	#Show winner
 	if black_player.isWin():
 		print "Black player wins"

@@ -21,14 +21,14 @@ class Player():
 		for i in len(list_of_moves)-1:
 			(sx, sy) = list_of_moves[i]
 			(ex, ey) = list_of_moves[i+1]
-            value = board.get(sx,sy)
-            board.set(sx,sy,-1) #set start crd to be .
-            #clear up the opponent's tile
-            if(sx==ex):
-                board.set(sx,(sy+ey)/2,-1)
-            else(sy==ey):
-                board.set((sx+ex)/2,sy,-1)
-            board.set(ex,ey,value)
+			value = board.get(sx,sy)
+			board.set(sx,sy,-1) #set start crd to be .
+			#clear up the opponent's tile
+			if(sx==ex):
+				board.set(sx,(sy+ey)/2,-1)
+			else:
+				board.set((sx+ex)/2,sy,-1)
+			board.set(ex,ey,value)
 
 
 	def findRemove(self, board):
@@ -89,7 +89,13 @@ class HumanPlayer(Player):
 
 
 class AIPlayer(Player):
+    def __init__(self, color, tile, depth):
+        self.color = color
+        self.tile = tile
+        self.depth = depth
+    
 	def findRemove(self, board):
+		print "###########"
 		#get legal ones
 		legal_moves = []
 		if self.tile == 1: #BLACK
@@ -103,12 +109,14 @@ class AIPlayer(Player):
 				legal_moves = [(4,4), (5,5)]
 		#return a random one from legal moves
 		random.shuffle(legal_moves)
+		print legal_moves
 		return legal_moves[0]
 	
-	def findMove( self, board, depth):
+	def findMove( self, board):
+		d = self.depth
 		import state
 		s = state.State(deepcopy(board),self.tile)
-		move = state.alphabeta(s,depth,self.tile)
+		move = state.alphabeta(s,d,self.tile)
 		return move
 		
 
