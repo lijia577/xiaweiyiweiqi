@@ -70,10 +70,11 @@ class Player():
 
 
 class AIPlayer(Player):
-    def __init__(self, color, tile, depth):
-        self.color = color
-        self.tile = tile
-        self.depth = depth
+	def __init__(self, color, tile,depth):
+		self.color = color
+		self.depth = depth
+		self.tile = tile
+
 
 	def makeRemove(self, board):
 		print "Making remove..."
@@ -99,9 +100,9 @@ class AIPlayer(Player):
 		print legal_moves
 		return legal_moves[0]
 	
-	def makeMove(self,board):
+	def makeMove(self,board,depth):
 		#make a move from one location to another
-		list_of_moves = self.findMove(board)
+		list_of_moves = self.findMove(board,depth)
 		for i in len(list_of_moves)-1:
 			(sx, sy) = list_of_moves[i]
 			(ex, ey) = list_of_moves[i+1]
@@ -113,11 +114,11 @@ class AIPlayer(Player):
 			else:
 				board.set((sx+ex)/2,sy,-1)
 			board.set(ex,ey,value)
-
-	def findMove( self, board):
+	
+	def findMove( self, board,d):
 		d = self.depth
 		import state
-		s = state.State(deepcopy(board),self.tile)
+		s = state.State(deepcopy(board),self.tile,self)
 		move = state.alphabeta(s,d,self.tile)
 		return move
 		

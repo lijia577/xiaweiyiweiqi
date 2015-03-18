@@ -5,12 +5,13 @@ import player
 
 
 class State:
-	def __init__(self, board, tile, parent=None, action = None):
+	def __init__(self, board, tile,player, parent=None, action = None):
 		self.board = board
 		self.parent = parent
 		self.kids = [] 
 		self.tile = tile # indicates who is playing in this state
 		self.action = action
+		self.player = player # this player is not changing
 	
 	def isTerminal(self):
 		# this state is terminal if no moves possible for the current tile. 
@@ -86,10 +87,10 @@ class State:
 		for move in moves:
 			newBoard = deepcopy(self.board)
 			# execute moves on a deepcoy of this.board
-			player.Player.executeMove(newBoard, move) 
+			self.player.makeMove(newBoard, move) 
 			op = (self.tile+1)%2 
 			# self is the parent of childNode.
-			childNode = State(newBoard,op,self,move) 
+			childNode = State(newBoard,op,self.player, self,move) 
 			self.kids.append(childNode)
 
 	# The current static evalution function how many kind of one step move can the black tile make. 

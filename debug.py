@@ -2,7 +2,7 @@ import board
 import player
 
  
-
+'''
 l1 = [-1, 0, -1, 0, 1, 0, -1, 0]
 l2 = [-1,-1,-1,-1,0, -1, -1, 1]
 l3 = [1, -1, -1, -1, 1, -1, 1, -1]
@@ -229,8 +229,18 @@ b.display()
 
 
 
+'''
+import board,player
 
+b = board.Board()
+a = player.AIPlayer('black',1,2)
 
+b.display()
+print a.findRemove(b)
+
+a.makeRemove(b)
+
+b.display()
 
 
 
