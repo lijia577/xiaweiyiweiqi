@@ -121,7 +121,29 @@ class AIPlayer(Player):
 		s = state.State(deepcopy(board),self.tile,self)
 		move = state.alphabeta(s,d,self.tile)
 		return move
-		
 
+class RandomPlayer(AIPlayer):
+	def findMove(self, board):
+		import state
+		s = state.State(deepcopy(board), self.tile, self)
+		movable = []
+		me = self.tile
+		opponent = (me+1)%2
+
+
+		for i in range(8):
+				for j in range(8):
+					if board.get(i+1,j+1) != me:
+						continue
+					if board.checkPosition(opponent, (i-1, j), (i-2, j)) or\
+					board.checkPosition(opponent, (i+1, j), (i+2, j)) or\
+					board.checkPosition(opponent, (i, j-1), (i, j-2)) or\
+					board.checkPosition(opponent, (i, j+1), (i, j+2)) :
+						movable.append((i+1,j+1))
+		
+		random.shuffle(movable)
+		list_of_moves = s.getMoveList(movable[0])
+		random.shuffle(list_of_moves)
+		return list_of_moves[0] #list of coors
 
 

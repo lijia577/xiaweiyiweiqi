@@ -52,13 +52,13 @@ class Board():
 				if not curr == me:
 					continue
 				#otherwise, check 4 directions
-				movable += self.__checkPosition(opponent, (i-1, j), (i-2, j))
-				movable += self.__checkPosition(opponent, (i+1, j), (i+2, j))
-				movable += self.__checkPosition(opponent, (i, j-1), (i, j-2))
-				movable += self.__checkPosition(opponent, (i, j+1), (i, j+2))
+				movable += self.checkPosition(opponent, (i-1, j), (i-2, j))
+				movable += self.checkPosition(opponent, (i+1, j), (i+2, j))
+				movable += self.checkPosition(opponent, (i, j-1), (i, j-2))
+				movable += self.checkPosition(opponent, (i, j+1), (i, j+2))
 		return movable
 
-	def __checkPosition(self, opponent, oppo_coor, next_coor):
+	def checkPosition(self, opponent, oppo_coor, next_coor):
 		# Helper function for checkMovesLeft
 		(x1, y1) = oppo_coor
 		(x2, y2) = next_coor

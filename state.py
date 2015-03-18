@@ -2,6 +2,7 @@ import sys
 import board   
 from copy import deepcopy
 import player
+import random
 
 
 class State:
@@ -82,6 +83,7 @@ class State:
 	def genSucc(self):
 		######### IMPLEMENT THIS ##########
 		moves = self.getPossibleMoves()
+		random.shuffle(moves)
 		
 		for move in moves:
 			newBoard = deepcopy(self.board)
