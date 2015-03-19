@@ -1,7 +1,19 @@
 import board
 import player
-
+import time
  
+b = board.Board()
+h = player.HumanPlayer('black',1)
+a = player.AIPlayer('white',0,3)
+
+h.makeRemove(b)
+a.makeRemove(b)
+b.display()
+time.sleep(5)
+h.makeMove(b)
+b.display()
+
+
 '''
 l1 = [-1, 0, -1, 0, 1, 0, -1, 0]
 l2 = [-1,-1,-1,-1,0, -1, -1, 1]
@@ -229,7 +241,6 @@ b.display()
 
 
 
-'''
 import board,player
 
 b = board.Board()
@@ -242,9 +253,7 @@ a.makeRemove(b)
 
 b.display()
 
-
-
-
+'''
 
 
 
