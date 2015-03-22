@@ -111,6 +111,60 @@ class State:
 		else:
 			return num1 - num2 
 			
+
+def minimax(state, depth, rootTile):
+	if(depth ==0):
+		print "alphabeta on depth 0 is meaningless. Error"
+		return None
+
+	# parameter : the last key is node list. 	
+	pm = {'inf':sys.maxint, '-inf':-sys.maxint-1,'cut':0, 'eval':0, 'nl':[]}
+	
+	res = minimaxhelper(state, True, depth, pm, rootTile)
+	avbf = sum(pm['nl'])/len(pm['nl'])
+	#book keeping staff: 
+	print 'number of cutoffs in pruning: ', pm['cut']
+	print 'number of static evaluations: ', pm['eval']
+	print 'The average branching factor: ', avbf
+	
+	print 'The Node you are searching for have evaluation score: ', res[0]
+	#return res[1]	
+	f = open("~/Desktop/temp_result.txt","a")
+	analysis = str(pm['cut'])+","+str(pm['eval'])+","+str(avbf)+"\n"
+	f.write(analysis)
+	f.close()
+	result = getExeNode(res[1])	
+	return result.action
+	
+def minimaxhelper(state,maxFlag, depth, pm, rootTile):
+	#generate successors of this state
+	state.genSucc()
+	pm['nl'].append(len(state.kids))
+	if(state.isTerminal()==True or depth==0):
+		pm['eval'] +=1 
+		return state.staticEval(rootTile), state
+
+	tmp = None
+
+	if maxFlag:
+		v = pm['-inf']
+		for kid in state.kids:
+			# t is tuple containing evaluationScore, state
+			t = abhelper(kid, False, depth-1, pm, rootTile)
+			v = max(v,t[0])
+			if v == t[0]:
+				#tmp stores the state with max evaluation score among kdis
+				tmp = t[1]
+		return v,tmp
+	else:
+		v = pm['inf']
+		for kid in state.kids:
+			t = abhelper(kid, True, depth-1, pm, rootTile)
+			v = min(v, t[0])
+			if v == t[0]:
+				tmp = t[1]
+		return v,tmp
+				
 	
 def alphabeta(state, depth, rootTile):
 	if(depth ==0):

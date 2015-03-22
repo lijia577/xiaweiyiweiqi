@@ -40,3 +40,7 @@
 18,White,18,16
 19,Black,6,7
 20,White,5,6
+#round, winner, #Black, #White
+#round, winner, #Black, #White
+#round, winner, #Black, #White
+#round, winner, #Black, #White
