@@ -44,3 +44,34 @@
 #round, winner, #Black, #White
 #round, winner, #Black, #White
 #round, winner, #Black, #White
+#round, winner, #Black, #White
+#round, winner, #Black, #White
+#round, winner, #Black, #White
+#round, winner, #Black, #White
+1,White,11,10
+#round, winner, #Black, #White
+1,Black,5,5
+#round, winner, #Black, #White
+1,White,7,5
+2,White,11,8
+3,White,13,14
+#round, winner, #Black, #White
+#round, winner, #Black, #White
+1,White,11,11
+2,White,12,10
+3,White,13,12
+#round, winner, #Black, #White
+1,White,9,8
+2,White,16,13
+3,White,13,13
+#round, winner, #Black, #White
+1,White,16,14
+2,White,10,5
+3,White,11,9
+#round, winner, #Black, #White
+1,White,10,10
+2,Black,7,7
+3,White,8,8
+#round, winner, #Black, #White
+#round, winner, #Black, #White
+1,White,10,11

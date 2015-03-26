@@ -97,19 +97,18 @@ class State:
 	# The current static evalution function how many kind of one step move can the black tile make. 
 	# It is DIFFERENT from NUMBER of ALL POSSIBLE MOVES currently !
 	def staticEval(self, rootTile):
+		#print 'rootTile is', rootTile
 		num1 = self.board.checkMovesLeft(rootTile)
 		op = (rootTile+1)%2
 		num2 = self.board.checkMovesLeft(op)
-		if(num1==0 or num2==0):
-			if(self.tile == rootTile):
-				# rootTile loses
-				#print 'Root Lose'
+		#print 'rootTile num', num1, 'the other', num2
+		if(rootTile==self.tile): #AI playing
+			if(num1==0):
 				return -sys.maxint-1
-			else:
-				#print 'Root wins'
-				return sys.maxint
 		else:
-			return num1 - num2 
+			if(num2==0):
+				return sys.maxint	
+		return num1 - num2 
 			
 
 def minimax(state, depth, rootTile):
@@ -121,6 +120,8 @@ def minimax(state, depth, rootTile):
 	pm = {'inf':sys.maxint, '-inf':-sys.maxint-1,'cut':0, 'eval':0, 'nl':[]}
 	
 	res = minimaxhelper(state, True, depth, pm, rootTile)
+	pm['nl']=filter(lambda a: a != 0, pm['nl'])
+	#print 'kid length list', pm['nl']
 	avbf = sum(pm['nl'])/len(pm['nl'])
 	#book keeping staff: 
 	print 'number of cutoffs in pruning: ', pm['cut']
@@ -129,7 +130,7 @@ def minimax(state, depth, rootTile):
 	
 	print 'The Node you are searching for have evaluation score: ', res[0]
 	#return res[1]	
-	f = open("~/Desktop/temp_result.txt","a")
+	f = open("./minimax_depth5.txt","a")
 	analysis = str(pm['cut'])+","+str(pm['eval'])+","+str(avbf)+"\n"
 	f.write(analysis)
 	f.close()
@@ -150,7 +151,7 @@ def minimaxhelper(state,maxFlag, depth, pm, rootTile):
 		v = pm['-inf']
 		for kid in state.kids:
 			# t is tuple containing evaluationScore, state
-			t = abhelper(kid, False, depth-1, pm, rootTile)
+			t = minimaxhelper(kid, False, depth-1, pm, rootTile)
 			v = max(v,t[0])
 			if v == t[0]:
 				#tmp stores the state with max evaluation score among kdis
@@ -159,7 +160,7 @@ def minimaxhelper(state,maxFlag, depth, pm, rootTile):
 	else:
 		v = pm['inf']
 		for kid in state.kids:
-			t = abhelper(kid, True, depth-1, pm, rootTile)
+			t = minimaxhelper(kid, True, depth-1, pm, rootTile)
 			v = min(v, t[0])
 			if v == t[0]:
 				tmp = t[1]
@@ -175,13 +176,19 @@ def alphabeta(state, depth, rootTile):
 	pm = {'inf':sys.maxint, '-inf':-sys.maxint-1,'cut':0, 'eval':0, 'nl':[]}
 	
 	res = abhelper(state, pm['-inf'], pm['inf'], True, depth, pm, rootTile)
+	pm['nl']=filter(lambda a: a != 0, pm['nl'])
 	
+	avbf = sum(pm['nl'])/len(pm['nl'])
 	#book keeping staff: 
 	print 'number of cutoffs in pruning: ', pm['cut']
 	print 'number of static evaluations: ', pm['eval']
-	print 'The average branching factor: ', sum(pm['nl'])/len(pm['nl'])
+	print 'The average branching factor: ', avbf
 	
 	print 'The Node you are searching for have evaluation score: ', res[0]
+	f = open("~/Desktop/temp_result.txt","a")
+	analysis = str(pm['cut'])+","+str(pm['eval'])+","+str(avbf)+"\n"
+	f.write(analysis)
+	f.close()
 	#return res[1]	
 	result = getExeNode(res[1])	
 	return result.action

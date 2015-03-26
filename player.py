@@ -1,4 +1,4 @@
-import board, random
+import board, random,state
 from copy import deepcopy
 from ast import literal_eval
 
@@ -197,9 +197,8 @@ class AIPlayer(Player):
 	
 	def findMove( self, board):
 		d = self.depth
-		import state
 		s = state.State(deepcopy(board),self.tile,self)
-		move = state.alphabeta(s,d,self.tile)
+		move = state.minimax(s,d,self.tile)
 		return move
 
 class RandomPlayer(AIPlayer):

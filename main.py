@@ -1,10 +1,9 @@
 import board, player
 
 def main():
-
-	fw = open("./AI_v_Random_results.txt", "a")
-	num_iter = 20 #CHANGE THIS NUMBER TO CHANGE NUMBER OF ITERATIONS
-	fw.write("#round, winner, #Black, #White\n")
+	#fw = open("./AI_v_Random_results.txt", "a")
+	num_iter = 1 #CHANGE THIS NUMBER TO CHANGE NUMBER OF ITERATIONS
+	#fw.write("#round, winner, #Black, #White\n")
 	for i in range(num_iter):
 		result = ""+str(i+1)+","
 		myBoard = board.Board()
@@ -24,21 +23,20 @@ def main():
 			black_player.makeMove(myBoard)
 			myBoard.display()
 			if black_player.isWin(myBoard):
-		 		print "Black player wins"
-		 		break
-		 	white_player.makeMove(myBoard)
-		 	myBoard.display()
-		 	if white_player.isWin(myBoard):
-		 		print "White player wins"
-		 		break
+				print "Black player wins"
+				break
+			white_player.makeMove(myBoard)
+			myBoard.display()
+			if white_player.isWin(myBoard):
+				print "White player wins"
+				break
 		if black_player.isWin(myBoard):
 			result += "Black,"
 		else:
 			result += "White,"
 
-
 		result += str(checkPieces(1, myBoard))+","+str(checkPieces(0, myBoard))+"\n"
-	 	fw.write(result);
+		#fw.write(result);
 	
 def checkPieces(tile, myboard):
 	num = 0
