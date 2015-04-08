@@ -86,13 +86,30 @@ if __name__ == '__main__':
 
 
 
+import state,player,board
+
+b = board.Board()
+for i in range(1,9):
+	for j in range(1,9):
+		b.set(i,j,-1)
+
+b.set(2,4,0)
+b.set(2,5,1)
+b.set(3,4,1)
+b.set(3,5,0)
+b.set(3,6,1)
+
+b.display()
+
+s = state.State(b,1,1)
+
+state.minimax(s,3,1)
 import board, player
 
 def main():
-
-	fw = open("./AI_v_Random_results.txt", "a")
-	num_iter = 20 #CHANGE THIS NUMBER TO CHANGE NUMBER OF ITERATIONS
-	fw.write("#round, winner, #Black, #White\n")
+	#fw = open("./AI_v_Random_results.txt", "a")
+	num_iter = 1 #CHANGE THIS NUMBER TO CHANGE NUMBER OF ITERATIONS
+	#fw.write("#round, winner, #Black, #White\n")
 	for i in range(num_iter):
 		result = ""+str(i+1)+","
 		myBoard = board.Board()
@@ -112,21 +129,20 @@ def main():
 			black_player.makeMove(myBoard)
 			myBoard.display()
 			if black_player.isWin(myBoard):
-		 		print "Black player wins"
-		 		break
-		 	white_player.makeMove(myBoard)
-		 	myBoard.display()
-		 	if white_player.isWin(myBoard):
-		 		print "White player wins"
-		 		break
+				print "Black player wins"
+				break
+			white_player.makeMove(myBoard)
+			myBoard.display()
+			if white_player.isWin(myBoard):
+				print "White player wins"
+				break
 		if black_player.isWin(myBoard):
 			result += "Black,"
 		else:
 			result += "White,"
 
-
 		result += str(checkPieces(1, myBoard))+","+str(checkPieces(0, myBoard))+"\n"
-	 	fw.write(result);
+		#fw.write(result);
 	
 def checkPieces(tile, myboard):
 	num = 0
@@ -139,7 +155,7 @@ def checkPieces(tile, myboard):
 
 if __name__ == '__main__':
 	main()
-import board, random
+import board, random,state
 from copy import deepcopy
 from ast import literal_eval
 
@@ -338,9 +354,8 @@ class AIPlayer(Player):
 	
 	def findMove( self, board):
 		d = self.depth
-		import state
 		s = state.State(deepcopy(board),self.tile,self)
-		move = state.alphabeta(s,d,self.tile)
+		move = state.minimax(s,d,self.tile)
 		return move
 
 class RandomPlayer(AIPlayer):
@@ -467,19 +482,18 @@ class State:
 	# The current static evalution function how many kind of one step move can the black tile make. 
 	# It is DIFFERENT from NUMBER of ALL POSSIBLE MOVES currently !
 	def staticEval(self, rootTile):
+		#print 'rootTile is', rootTile
 		num1 = self.board.checkMovesLeft(rootTile)
 		op = (rootTile+1)%2
 		num2 = self.board.checkMovesLeft(op)
-		if(num1==0 or num2==0):
-			if(self.tile == rootTile):
-				# rootTile loses
-				#print 'Root Lose'
+		#print 'rootTile num', num1, 'the other', num2
+		if(rootTile==self.tile): #AI playing
+			if(num1==0):
 				return -sys.maxint-1
-			else:
-				#print 'Root wins'
-				return sys.maxint
 		else:
-			return num1 - num2 
+			if(num2==0):
+				return sys.maxint	
+		return num1 - num2 
 			
 
 def minimax(state, depth, rootTile):
@@ -491,14 +505,20 @@ def minimax(state, depth, rootTile):
 	pm = {'inf':sys.maxint, '-inf':-sys.maxint-1,'cut':0, 'eval':0, 'nl':[]}
 	
 	res = minimaxhelper(state, True, depth, pm, rootTile)
-	
+	pm['nl']=filter(lambda a: a != 0, pm['nl'])
+	#print 'kid length list', pm['nl']
+	avbf = sum(pm['nl'])/len(pm['nl'])
 	#book keeping staff: 
 	print 'number of cutoffs in pruning: ', pm['cut']
 	print 'number of static evaluations: ', pm['eval']
-	print 'The average branching factor: ', sum(pm['nl'])/len(pm['nl'])
+	print 'The average branching factor: ', avbf
 	
 	print 'The Node you are searching for have evaluation score: ', res[0]
 	#return res[1]	
+	f = open("./minimax_depth5.txt","a")
+	analysis = str(pm['cut'])+","+str(pm['eval'])+","+str(avbf)+"\n"
+	f.write(analysis)
+	f.close()
 	result = getExeNode(res[1])	
 	return result.action
 	
@@ -516,7 +536,7 @@ def minimaxhelper(state,maxFlag, depth, pm, rootTile):
 		v = pm['-inf']
 		for kid in state.kids:
 			# t is tuple containing evaluationScore, state
-			t = abhelper(kid, False, depth-1, pm, rootTile)
+			t = minimaxhelper(kid, False, depth-1, pm, rootTile)
 			v = max(v,t[0])
 			if v == t[0]:
 				#tmp stores the state with max evaluation score among kdis
@@ -525,7 +545,7 @@ def minimaxhelper(state,maxFlag, depth, pm, rootTile):
 	else:
 		v = pm['inf']
 		for kid in state.kids:
-			t = abhelper(kid, True, depth-1, pm, rootTile)
+			t = minimaxhelper(kid, True, depth-1, pm, rootTile)
 			v = min(v, t[0])
 			if v == t[0]:
 				tmp = t[1]
@@ -541,13 +561,19 @@ def alphabeta(state, depth, rootTile):
 	pm = {'inf':sys.maxint, '-inf':-sys.maxint-1,'cut':0, 'eval':0, 'nl':[]}
 	
 	res = abhelper(state, pm['-inf'], pm['inf'], True, depth, pm, rootTile)
+	pm['nl']=filter(lambda a: a != 0, pm['nl'])
 	
+	avbf = sum(pm['nl'])/len(pm['nl'])
 	#book keeping staff: 
 	print 'number of cutoffs in pruning: ', pm['cut']
 	print 'number of static evaluations: ', pm['eval']
-	print 'The average branching factor: ', sum(pm['nl'])/len(pm['nl'])
+	print 'The average branching factor: ', avbf
 	
 	print 'The Node you are searching for have evaluation score: ', res[0]
+	f = open("~/Desktop/temp_result.txt","a")
+	analysis = str(pm['cut'])+","+str(pm['eval'])+","+str(avbf)+"\n"
+	f.write(analysis)
+	f.close()
 	#return res[1]	
 	result = getExeNode(res[1])	
 	return result.action
